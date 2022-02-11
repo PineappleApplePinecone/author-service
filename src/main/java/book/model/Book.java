@@ -67,9 +67,4 @@ public class Book {
         this.title = title;
     }
 
-    public static Book from(BookDto bookDto) {
-        Book book = new Book();
-        book.setDescription(bookDto.getDescription());
-        return book;
-    }
  }

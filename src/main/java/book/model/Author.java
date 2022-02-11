@@ -22,13 +22,6 @@ public class Author {
     private Long id;
     private String authorName;
 
-    public static Author from(AuthorDto authorDto) {
-        Author author = new Author();
-        author.setAuthorName(authorDto.getAuthorName());
-        author.setId(author.getId());
-        return author;
-    }
-
     public Author() {
     }
 

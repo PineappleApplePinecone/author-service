@@ -11,11 +11,4 @@ import lombok.Data;
 public class AuthorDto {
     private Long id;
     private String authorName;
-
-    public static AuthorDto from(Author author) {
-        AuthorDto authorDto = new AuthorDto();
-        authorDto.setId(author.getId());
-        authorDto.setAuthorName(author.getAuthorName());
-        return authorDto;
-    }
 }

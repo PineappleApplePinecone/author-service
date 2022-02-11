@@ -9,14 +9,6 @@ public class BookDto {
     private String description;
     private String title;
 
-    public static BookDto from(Book book) {
-        BookDto bookDto = new BookDto();
-        bookDto.setId(book.getId());
-        bookDto.setDescription(book.getDescription());
-        bookDto.setTitle(book.getTitle());
-        return bookDto;
-    }
-
     public BookDto() {
     }
 

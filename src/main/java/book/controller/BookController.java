@@ -1,10 +1,12 @@
 package book.controller;
 
-import book.model.Author;
 import book.model.Book;
 import book.model.dto.AuthorDto;
 import book.model.dto.BookDto;
-import book.service.AuthorService;
+import book.model.mapper.AuthorMapper;
+import book.model.mapper.BookMapper;
+import book.model.mapper.impl.AuthorMapperImp;
+import book.model.mapper.impl.BookMapperImp;
 import book.service.BookService;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -25,23 +27,27 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/books")
 public class BookController {
     private final BookService bookService;
+    private final BookMapper bookMapper;
+    private final AuthorMapper authorMapper;
 
     @Autowired
-    public BookController(BookService bookService) {
+    public BookController(BookService bookService, BookMapper bookMapper, AuthorMapper authorMapper) {
         this.bookService = bookService;
+        this.bookMapper = bookMapper;
+        this.authorMapper = authorMapper;
     }
 
     @PostMapping
     public ResponseEntity<BookDto> addBook(@RequestBody final BookDto bookDto) {
-        Book book = bookService.addBook(Book.from(bookDto));
-        return new ResponseEntity<>(BookDto.from(book), HttpStatus.OK);
+        Book book = bookService.addBook(bookMapper.dtoToBook(bookDto));
+        return new ResponseEntity<>(bookMapper.bookToDto(book), HttpStatus.OK);
     }
 
     @GetMapping
     public ResponseEntity<Set<BookDto>> getBooks() {
         Set<Book> setOfBooks = bookService.getBooks();
         Set<BookDto> setOfBookDtos = setOfBooks.stream()
-                .map(BookDto::from)
+                .map(bookMapper::bookToDto)
                 .collect(Collectors.toSet());
         return new ResponseEntity<>(setOfBookDtos, HttpStatus.OK);
     }
@@ -51,7 +57,7 @@ public class BookController {
         Set<Book> books = bookService.getBooksByPhrase(phraseFromBooksTitle);
         Set<AuthorDto> setOfAuthorDtos = books.stream()
                 .flatMap(book -> book.getAuthors().stream())
-                .map(AuthorDto::from)
+                .map(authorMapper::authorToDto)
                 .collect(Collectors.toSet());
         return new ResponseEntity<>(setOfAuthorDtos, HttpStatus.OK);
     }
@@ -59,33 +65,33 @@ public class BookController {
     @GetMapping(value = "/{id}")
     public ResponseEntity<BookDto> getBook(@PathVariable final Long id) {
         Book book = bookService.getBookById(id);
-        return new ResponseEntity<>(BookDto.from(book), HttpStatus.OK);
+        return new ResponseEntity<>(bookMapper.bookToDto(book), HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/{bookId}")
     public  ResponseEntity<BookDto> deleteBook(@PathVariable final Long bookId) {
         Book book = bookService.deleteBook(bookId);
-        return new ResponseEntity<>(BookDto.from(book), HttpStatus.OK);
+        return new ResponseEntity<>(bookMapper.bookToDto(book), HttpStatus.OK);
     }
 
     @PutMapping(value = "/{bookId}")
     public ResponseEntity<BookDto> updateBook(@PathVariable final Long bookId,
                                               @RequestBody final BookDto bookDto) {
-        Book updatedBook = bookService.updateBook(bookId, Book.from(bookDto));
-        return new ResponseEntity<>(BookDto.from(updatedBook), HttpStatus.OK);
+        Book updatedBook = bookService.updateBook(bookId, bookMapper.dtoToBook(bookDto));
+        return new ResponseEntity<>(bookMapper.bookToDto(updatedBook), HttpStatus.OK);
     }
 
     @PostMapping(value = "/{bookId}/books/{authorId}/add")
     public ResponseEntity<BookDto> addAuthorToBook(@PathVariable final Long bookId,
                                                    @PathVariable final Long authorId) {
         Book book = bookService.addAuthorToBook(bookId, authorId);
-        return new ResponseEntity<>(BookDto.from(book), HttpStatus.OK);
+        return new ResponseEntity<>(bookMapper.bookToDto(book), HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/{bookId}/books/{authorId}/remove")
     public ResponseEntity<BookDto> removeAuthorFromBook(@PathVariable final Long bookId,
                                                    @PathVariable final Long authorId) {
         Book book = bookService.removeAuthorFromBook(bookId, authorId);
-        return new ResponseEntity<>(BookDto.from(book), HttpStatus.OK);
+        return new ResponseEntity<>(bookMapper.bookToDto(book), HttpStatus.OK);
     }
 }

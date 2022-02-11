@@ -1,15 +1,12 @@
 package book.controller;
 
 import book.model.Author;
-import book.model.Book;
 import book.model.dto.AuthorDto;
+import book.model.mapper.AuthorMapper;
+import book.model.mapper.impl.AuthorMapperImp;
 import book.service.AuthorService;
-import book.service.BookService;
-import java.util.Collection;
-import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,25 +23,27 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(path = "/authors")
 public class AuthorController {
     private final AuthorService authorService;
-
+    private final AuthorMapper authorMapper;
 
     @Autowired
-    public AuthorController(AuthorService authorService) {
+    public AuthorController(AuthorService authorService, AuthorMapper authorMapper) {
         this.authorService = authorService;
+        this.authorMapper = authorMapper;
+
 
     }
 
     @PostMapping
     public ResponseEntity<AuthorDto> addAuthor(@RequestBody final AuthorDto authorDto) {
-        Author author = authorService.addAuthor(Author.from(authorDto));
-        return new ResponseEntity<>(AuthorDto.from(author), HttpStatus.OK);
+        Author author = authorService.addAuthor(authorMapper.dtoToAuthor(authorDto));
+        return new ResponseEntity<>(authorMapper.authorToDto(author), HttpStatus.OK);
     }
 
     @GetMapping
     public ResponseEntity<Set<AuthorDto>> getAuthors() {
         Set<Author> setOfAuthors = authorService.getAuthors();
         Set<AuthorDto> setOfAuthorDtos = setOfAuthors.stream()
-                .map(AuthorDto::from)
+                .map(authorMapper::authorToDto)
                 .collect(Collectors.toSet());
         return new ResponseEntity<>(setOfAuthorDtos, HttpStatus.OK);
 
@@ -53,20 +52,20 @@ public class AuthorController {
     @GetMapping(value = "/{authorId}")
     public ResponseEntity<AuthorDto> getAuthor(@PathVariable final Long authorId) {
         Author author = authorService.getAuthor(authorId);
-        return new ResponseEntity<>(AuthorDto.from(author), HttpStatus.OK);
+        return new ResponseEntity<>(authorMapper.authorToDto(author), HttpStatus.OK);
     }
 
 
     @DeleteMapping(value = "/{authorId}")
     public ResponseEntity<AuthorDto> deleteAuthor(@PathVariable final long authorId) {
         Author author = authorService.deleteAuthor(authorId);
-        return new ResponseEntity<>(AuthorDto.from(author), HttpStatus.OK);
+        return new ResponseEntity<>(authorMapper.authorToDto(author), HttpStatus.OK);
     }
 
     @PutMapping(value = "/{authorId}")
     public ResponseEntity<AuthorDto> updateAuthor(@PathVariable final Long authorId,
                                                   @RequestBody final AuthorDto authorDto) {
-        Author updatedAuthor = authorService.updateAuthor(authorId, Author.from(authorDto));
-        return new ResponseEntity<>(AuthorDto.from(updatedAuthor), HttpStatus.OK);
+        Author updatedAuthor = authorService.updateAuthor(authorId, authorMapper.dtoToAuthor(authorDto));
+        return new ResponseEntity<>(authorMapper.authorToDto(updatedAuthor), HttpStatus.OK);
     }
 }
