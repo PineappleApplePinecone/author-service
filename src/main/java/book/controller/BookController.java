@@ -5,9 +5,7 @@ import book.model.dto.AuthorDto;
 import book.model.dto.BookDto;
 import book.model.mapper.AuthorMapper;
 import book.model.mapper.BookMapper;
-import book.model.mapper.impl.AuthorMapperImp;
-import book.model.mapper.impl.BookMapperImp;
-import book.service.BookService;
+import book.service.impl.BookServiceImpl;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,12 +24,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/books")
 public class BookController {
-    private final BookService bookService;
+    private final BookServiceImpl bookService;
     private final BookMapper bookMapper;
     private final AuthorMapper authorMapper;
 
     @Autowired
-    public BookController(BookService bookService, BookMapper bookMapper, AuthorMapper authorMapper) {
+    public BookController(BookServiceImpl bookService, BookMapper bookMapper, AuthorMapper authorMapper) {
         this.bookService = bookService;
         this.bookMapper = bookMapper;
         this.authorMapper = authorMapper;
@@ -53,8 +51,8 @@ public class BookController {
     }
 
     @GetMapping(value = "/phrase")
-    public ResponseEntity<Set<AuthorDto>> getAuthorsByPhrase(@RequestParam String phraseFromBooksTitle) {
-        Set<Book> books = bookService.getBooksByPhrase(phraseFromBooksTitle);
+    public ResponseEntity<Set<AuthorDto>> getAuthorsByPhrase(@RequestParam String value) {
+        Set<Book> books = bookService.findByTitleContaining(value);
         Set<AuthorDto> setOfAuthorDtos = books.stream()
                 .flatMap(book -> book.getAuthors().stream())
                 .map(authorMapper::authorToDto)
@@ -88,7 +86,7 @@ public class BookController {
         return new ResponseEntity<>(bookMapper.bookToDto(book), HttpStatus.OK);
     }
 
-    @DeleteMapping(value = "/{bookId}/books/{authorId}/remove")
+    @DeleteMapping(value = "/{bookId}/authors/{authorId}")
     public ResponseEntity<BookDto> removeAuthorFromBook(@PathVariable final Long bookId,
                                                    @PathVariable final Long authorId) {
         Book book = bookService.removeAuthorFromBook(bookId, authorId);

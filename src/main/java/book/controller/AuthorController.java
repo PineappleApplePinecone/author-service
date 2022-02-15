@@ -3,8 +3,7 @@ package book.controller;
 import book.model.Author;
 import book.model.dto.AuthorDto;
 import book.model.mapper.AuthorMapper;
-import book.model.mapper.impl.AuthorMapperImp;
-import book.service.AuthorService;
+import book.service.impl.AuthorServiceImpl;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,15 +21,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping(path = "/authors")
 public class AuthorController {
-    private final AuthorService authorService;
-    private final AuthorMapper authorMapper;
+    private AuthorServiceImpl authorService;
+    private AuthorMapper authorMapper;
 
     @Autowired
-    public AuthorController(AuthorService authorService, AuthorMapper authorMapper) {
+    public AuthorController(AuthorServiceImpl authorService, AuthorMapper authorMapper) {
         this.authorService = authorService;
         this.authorMapper = authorMapper;
-
-
     }
 
     @PostMapping
@@ -57,7 +54,7 @@ public class AuthorController {
 
 
     @DeleteMapping(value = "/{authorId}")
-    public ResponseEntity<AuthorDto> deleteAuthor(@PathVariable final long authorId) {
+    public ResponseEntity<AuthorDto> deleteAuthor(@PathVariable final Long authorId) {
         Author author = authorService.deleteAuthor(authorId);
         return new ResponseEntity<>(authorMapper.authorToDto(author), HttpStatus.OK);
     }

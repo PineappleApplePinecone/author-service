@@ -25,16 +25,25 @@ public class DataInjector {
         Author robertMartinsApprentice = new Author("Apprentice");
         Author maryShelley = new Author ("MaryShelley");
 
-        Book thinkingInJava = new Book("ThinkingInJava");
-        Book thinkingInJavaTwo = new Book("ThinkingInJavaSecondEdition");
-        Book clearCode = new Book("ClearCode");
-        Book frankenstein = new Book("Frankenstein");
+        Book thinkingInJava = new Book.Builder()
+                .withTitle("ThinkingInJava")
+                .build();
+        Book thinkingInJavaTwo = new Book.Builder()
+                .withTitle("ThinkingInJavaSecondEdition")
+                .build();
+        Book clearCode = new Book.Builder()
+                .withTitle("ClearCode")
+                .build();
+        Book frankenstein = new Book.Builder()
+                .withTitle("Frankenstein")
+                .build();
         Set<Book> setOfBooks = Set.of(thinkingInJava, clearCode, frankenstein, thinkingInJavaTwo);
 
         thinkingInJava.addAuthor(bruceEckel);
         thinkingInJava.addAuthor(robertMartinsApprentice);
         clearCode.addAuthor(robertMartin);
         clearCode.addAuthor(robertMartinsApprentice);
+        thinkingInJavaTwo.addAuthor(maryShelley);
         frankenstein.addAuthor(maryShelley);
 
         bookRepository.saveAll(setOfBooks);
