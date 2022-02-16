@@ -1,9 +1,9 @@
 package book.service.impl;
 
 import book.exception.AuthorDoesNotExistsException;
+import book.service.AuthorService;
 import book.model.Author;
 import book.repository.AuthorRepository;
-import book.service.AuthorService;
 import java.util.HashSet;
 import java.util.Set;
 import javax.transaction.Transactional;
@@ -49,5 +49,4 @@ public class AuthorServiceImpl implements AuthorService {
         updatedAuthor.setAuthorName(author.getAuthorName());
         return updatedAuthor;
     }
-
 }

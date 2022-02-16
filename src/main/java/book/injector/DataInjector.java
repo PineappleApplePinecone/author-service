@@ -2,7 +2,6 @@ package book.injector;
 
 import book.model.Author;
 import book.model.Book;
-import book.repository.AuthorRepository;
 import book.repository.BookRepository;
 import java.util.Set;
 import javax.annotation.PostConstruct;

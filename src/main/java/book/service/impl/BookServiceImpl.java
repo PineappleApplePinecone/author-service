@@ -5,10 +5,8 @@ import book.model.Author;
 import book.model.Book;
 import book.repository.BookRepository;
 import book.service.BookService;
-import book.service.impl.AuthorServiceImpl;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,9 +31,6 @@ public class BookServiceImpl implements BookService {
     @Override
     public Set<Book> findByTitleContaining(String value) {
         return bookRepository.findByTitleContaining(ANY_CHAR  + value + ANY_CHAR);
-        /*return bookRepository.findAll().stream()
-                .filter(book -> !book.getTitle().isEmpty() && book.getTitle().contains(value))
-                .collect(Collectors.toSet());*/
     }
 
     @Override

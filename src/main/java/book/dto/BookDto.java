@@ -1,4 +1,4 @@
-package book.model.dto;
+package book.dto;
 
 import book.model.Book;
 import lombok.Data;
