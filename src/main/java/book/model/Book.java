@@ -1,7 +1,5 @@
 package book.model;
 
-import book.model.dto.BookDto;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
@@ -21,9 +19,9 @@ import lombok.Data;
 @Table(name = "books")
 public class Book {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String Description;
+    private String description;
     private BigDecimal price;
     private String title;
     @ManyToMany(cascade = CascadeType.PERSIST)
@@ -42,34 +40,40 @@ public class Book {
         authors.remove(author);
     }
 
-    public Book() {
-    }
+    public static class Builder {
+        private Book book;
 
-    public Book(Long id,
-                String description,
-                BigDecimal price,
-                String title,
-                Set<Author> authors) {
-        this.id = id;
-        this.Description = description;
-        this.price = price;
-        this.title = title;
-        this.authors = authors;
-    }
+        public Builder() {
+            book = new Book();
+        }
 
-    public Book(String description, String title, Set<Author> authors) {
-        this.Description = description;
-        this.title = title;
-        this.authors = authors;
-    }
+        public Builder withId(Long id) {
+            book.id = id;
+            return this;
+        }
 
-    public Book(String title) {
-        this.title = title;
-    }
+        public Builder withDescription(String description) {
+            book.description = description;
+            return this;
+        }
 
-    public static Book from(BookDto bookDto) {
-        Book book = new Book();
-        book.setDescription(bookDto.getDescription());
-        return book;
+        public Builder withPrice(BigDecimal price) {
+            book.price = price;
+            return this;
+        }
+
+        public Builder withTitle(String title) {
+            book.title = title;
+            return this;
+        }
+
+        public Builder withAuthors(Set<Author> authors) {
+            book.authors = authors;
+            return this;
+        }
+
+        public Book build() {
+            return book;
+        }
     }
  }

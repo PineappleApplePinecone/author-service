@@ -1,4 +1,4 @@
-package book.model.dto;
+package book.dto;
 
 import book.model.Book;
 import lombok.Data;
@@ -8,14 +8,6 @@ public class BookDto {
     private Long id;
     private String description;
     private String title;
-
-    public static BookDto from(Book book) {
-        BookDto bookDto = new BookDto();
-        bookDto.setId(book.getId());
-        bookDto.setDescription(book.getDescription());
-        bookDto.setTitle(book.getTitle());
-        return bookDto;
-    }
 
     public BookDto() {
     }
